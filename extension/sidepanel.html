@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cosmos DB Sidekick</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+
+<body>
+  <div id="app">
+    <header id="header">
+      <div class="header-title">
+        <span class="header-icon">🌍</span>
+        <h1>Cosmos DB Sidekick</h1>
+        <a href="https://github.com/abhirockzz/cosmosdb-sidekick" target="_blank" class="header-action-btn"
+          title="View on GitHub">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+          </svg>
+        </a>
+      </div>
+      <div class="header-actions">
+        <button id="new-chat-btn" class="header-action-btn" title="New Chat">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round">
+            <circle cx="12" cy="12" r="9" opacity="0.15" fill="currentColor" stroke="none"></circle>
+            <line x1="12" y1="7" x2="12" y2="17"></line>
+            <line x1="7" y1="12" x2="17" y2="12"></line>
+          </svg>
+        </button>
+        <button id="history-btn" class="header-action-btn" title="Chat History">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </button>
+        <div id="status" class="status status-checking">Checking...</div>
+      </div>
+    </header>
+
+    <!-- History drawer -->
+    <div id="history-drawer" class="history-drawer" style="display: none;">
+      <div id="history-list" class="history-list"></div>
+    </div>
+
+    <div id="context-bar" class="context-bar" style="display: none;">
+      <span id="context-text"></span>
+    </div>
+
+    <!-- Startup screen: shown when sidecar is not running -->
+    <div id="startup-screen" class="startup-screen" style="display: none;">
+      <div class="startup-content">
+        <div class="startup-icon">🚀</div>
+        <h2>Start the Sidecar</h2>
+        <p>The backend server isn't running. Open a terminal and run:</p>
+        <div class="startup-command">
+          <code id="startup-cmd">cd sidecar &amp;&amp; npm start</code>
+          <button id="copy-cmd-btn" class="copy-btn" title="Copy to clipboard">📋</button>
+        </div>
+        <button id="retry-btn" class="retry-btn">Retry Connection</button>
+        <p class="startup-hint">Auto-retrying every few seconds...</p>
+      </div>
+    </div>
+
+    <!-- Reconnect banner: shown when sidecar drops mid-session -->
+    <div id="reconnect-banner" class="reconnect-banner" style="display: none;">
+      <span>Sidecar disconnected.</span>
+      <button id="banner-retry-btn" class="banner-btn">Retry</button>
+    </div>
+
+    <div id="messages" class="messages">
+    </div>
+
+    <!-- Emulator offline banner: replaces input when data source is unreachable -->
+    <div id="emulator-offline-banner" class="emulator-offline-banner" style="display: none;">
+      <span>⚠️ Cosmos DB emulator is not reachable</span>
+      <button id="emulator-retry-btn" class="banner-btn">Retry</button>
+    </div>
+
+    <div id="input-area" class="input-area">
+      <textarea id="prompt-input" placeholder="Ask about your data..." rows="1"
+        aria-label="Ask about your data"></textarea>
+      <button id="send-btn" title="Send" aria-label="Send message">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+
+</html>
