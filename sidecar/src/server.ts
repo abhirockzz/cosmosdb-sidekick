@@ -5,7 +5,7 @@ import { createSession, sendMessage, destroySession, hasSession, listAllSessions
 import type { SessionEvent } from "@github/copilot-sdk";
 
 const app = express();
-const PORT = 3001;
+const PORT = parseInt(process.env.PORT || "3001", 10);
 const HOST = "127.0.0.1"; // localhost only — no network exposure
 
 // CORS: lock to a single Chrome extension origin after first request
