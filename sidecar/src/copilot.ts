@@ -29,7 +29,14 @@ Rules:
 - If a query fails, explain the error and try to fix it.
 - You can only run SELECT queries for reading data. To insert or update documents, use the upsert_items tool.
 - When generating test data, always include an 'id' field and the container's partition key field in each document.
-- Keep responses concise and focused on the data.`;
+- Keep responses concise and focused on the data.
+
+Write-safety rules (apply before every upsert_items call):
+- Determine the correct target container from the user's request. If the user says "add products", the target is the products container, regardless of which container is shown in the ambient context.
+- If the user's intent implies a different container than the ambient context, use the container that matches the user's intent.
+- Before writing, sample a few documents from the target container to verify your document shape matches the existing schema (field names, partition key).
+- If the upsert_items response includes warnings (e.g. missing partition key), stop and inform the user — do not silently continue.
+- After a successful write, run a SELECT query against the target container to verify the data landed correctly, and show the results to the user.`;
 
 let client: CopilotClient | null = null;
 
@@ -160,7 +167,7 @@ export interface ExplorerContext {
   contextResolved?: boolean;
 }
 
-function buildContextPrefix(context: ExplorerContext): string {
+export function buildContextPrefix(context: ExplorerContext): string {
   const parts: string[] = [];
   const isResolved =
     context.contextResolved === true ||
@@ -176,7 +183,7 @@ function buildContextPrefix(context: ExplorerContext): string {
   }
   if (parts.length === 0) return "";
 
-  return `[Current Data Explorer context — use as defaults when the user doesn't specify explicitly]\n${parts.join("\n")}\n\n`;
+  return `[Current Data Explorer context — use as default for reads. For writes, only use if the user's request doesn't imply a different container.]\n${parts.join("\n")}\n\n`;
 }
 
 export async function sendMessage(

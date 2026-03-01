@@ -114,15 +114,49 @@ export async function checkEmulatorConnection(): Promise<boolean> {
  * Upsert one or more items into a container.
  * Each item must have an `id` field. Uses individual upsert calls
  * so partial failures don't break the batch.
+ * 
+ * Returns partition key path and warnings if items are missing the
+ * partition key field — this helps the LLM detect wrong-container writes.
  */
 export async function upsertItems(
   databaseId: string,
   containerId: string,
   items: Record<string, unknown>[]
-): Promise<{ succeeded: number; failed: number; errors: string[] }> {
+): Promise<{
+  succeeded: number;
+  failed: number;
+  errors: string[];
+  warnings: string[];
+  partitionKeyPath: string | null;
+}> {
   const container = cosmosClient.database(databaseId).container(containerId);
   let succeeded = 0;
   const errors: string[] = [];
+  const warnings: string[] = [];
+  let partitionKeyPath: string | null = null;
+
+  // Fetch partition key path for validation — gracefully skip if it fails
+  try {
+    const { resource } = await container.read();
+    if (resource?.partitionKey?.paths?.length) {
+      partitionKeyPath = resource.partitionKey.paths[0];
+    }
+  } catch {
+    // Can't read container metadata — skip validation, let upsert proceed
+  }
+
+  // Check each item for the partition key field
+  if (partitionKeyPath) {
+    // Strip leading "/" to get the field name (e.g. "/customerId" → "customerId")
+    const pkField = partitionKeyPath.replace(/^\//, "");
+    for (const item of items) {
+      if (!(pkField in item)) {
+        warnings.push(
+          `Item ${item.id ?? "(no id)"} is missing partition key field '${pkField}' (path: ${partitionKeyPath}). Data may be orphaned or written to the wrong container.`
+        );
+      }
+    }
+  }
 
   for (const item of items) {
     try {
@@ -133,5 +167,5 @@ export async function upsertItems(
     }
   }
 
-  return { succeeded, failed: errors.length, errors };
+  return { succeeded, failed: errors.length, errors, warnings, partitionKeyPath };
 }
