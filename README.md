@@ -134,3 +134,5 @@ COPILOT_MODEL=claude-sonnet-4.5 npm start
 | "Sidecar disconnected" banner mid-conversation | The sidecar process stopped. Restart it, then click **Retry** in the banner.                                                                                              |
 | "⚠️ Cosmos DB emulator is not reachable" banner | The emulator isn't running or is still starting up. Start the Docker container (see Prerequisites), then click **Retry** — or wait, as the extension polls automatically. |
 | Context bar not updating                       | Refresh the Data Explorer tab after reloading the extension.                                                                                                              |
+
+⚠️ Disclaimer: This is an experimental project and not an official Microsoft or Azure offering. It’s designed for learning and sharing, not for production use. AI generated responses may be inaccurate or incomplete. Always review generated queries before running them against your data.
