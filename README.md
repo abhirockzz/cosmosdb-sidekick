@@ -6,6 +6,12 @@ Ask questions in plain English — the AI writes and runs actual queries against
 
 ## What you can do
 
+> Click to play the quick demo, and scroll down for a detailed walkthrough of features and setup instructions.
+
+<a href="https://abhirockzz.github.io/videos/cosmosdb_sidekick.mp4" target="_blank">
+  <img src="images/write.png" alt="Quick demo" width="100%">
+</a>
+
 ### Explore your data
 
 - **"What does the schema look like?"** → samples documents and describes the structure
